@@ -1,11 +1,12 @@
 # This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
 
-name: Node.js CI
+name: Contract tests CI
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - '*'
   pull_request:
     branches: [ main ]
 
@@ -27,4 +28,5 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
     - run: npm ci
+    - run: npx hardhat compile
     - run: npx hardhat coverage

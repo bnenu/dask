@@ -1,3 +1,4 @@
+![Tests passing](https://github.com/bnenu/dask/actions/workflows/tests.yml/badge.svg)
 # Descentralized jobs marketplace
 
 This is a job marketplace backed by a smart contract.

@@ -1,10 +1,88 @@
-# Advanced Sample Hardhat Project
+# Descentralized jobs marketplace
 
-This project demonstrates an advanced Hardhat use case, integrating other tools commonly used alongside Hardhat in the ecosystem.
+This is a job marketplace backed by a smart contract.
+The project was built following the course **6-Figure Blockchain Developer**
+from [EatTheBlocks](https://eattheblocks.com)
 
-The project comes with a sample contract, a test for that contract, a sample script that deploys that contract, and an example of a task implementation, which simply lists the available accounts. It also comes with a variety of other tools, preconfigured to work with the project code.
+It includes the dex contract, scripts to run and deploy local or on testnets and a basic front-end app that connects to the contract.
 
-Try running some of the following tasks:
+The stack used `Solidity`, `Typescript`, `Hardhat`, `EthersJS`, `NextJS` (create-next-app), `TailwindCSS`
+
+## Local development
+
+Clone the project locally and `cd` in the created directory
+
+
+#### Install dependencies
+```
+npm install
+```
+
+#### Start local development blockchain
+```
+npx hardhat node
+
+```
+
+#### Deploy contract locally
+In another teminal window
+```
+npm run deploy:local
+```
+Contract is deployed by the first account created by Hardhat. Connect one of these accounts to your Metamask wallet to test it in front-end.
+
+<!-- Seed your contract with data locally for development -->
+<!-- ``` -->
+<!-- npm run seed -->
+<!-- ``` -->
+
+#### Deploy contract on testnets
+
+Create a `.env` file based on the 'env.example' and provide the network url
+(usually provided by INFURA or other provider).
+
+```
+npm run deploy -- --<network>
+```
+(Ex: `npm run deploy -- --rinkeby`)
+Requires provision of the owner for the target network.
+*THIS CONTRACT HAS NOT BEEN TESTED ON ANY TESTNET YET*
+
+#### Run tests
+```
+npm run test
+```
+
+### Frontend development
+
+#### Install dependencies and setup
+```
+cd frontend
+npm install
+```
+
+Create a `.env` file based on the provided example (`env.example`) and set `REACT_APP_ENVIRONMENT` value to `"local"` to connect to local chain or `<testnet>` if you have the contract deployed to one of the networks. (currently supported by the scripts `rinkeby` and `mumbai`)
+Also currently requires an INFURA project to connect to testnets and wallet.
+
+
+#### Start development server
+```
+npm start
+```
+Open `http://localhost:3000` in browser
+
+
+#### Build frontend
+```
+npm run build
+```
+
+#### Run tests in frontend
+```
+npm test
+```
+
+### Other Hardhat commands
 
 ```shell
 npx hardhat accounts
@@ -28,12 +106,6 @@ npx solhint 'contracts/**/*.sol' --fix
 # Etherscan verification
 
 To try out Etherscan verification, you first need to deploy a contract to an Ethereum network that's supported by Etherscan, such as Ropsten.
-
-In this project, copy the .env.example file to a file named .env, and then edit it to fill in the details. Enter your Etherscan API key, your Ropsten node URL (eg from Alchemy), and the private key of the account which will send the deployment transaction. With a valid .env file in place, first deploy your contract:
-
-```shell
-hardhat run --network ropsten scripts/deploy.ts
-```
 
 Then, copy the deployment address and paste it in to replace `DEPLOYED_CONTRACT_ADDRESS` in this command:
 

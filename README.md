@@ -1,4 +1,4 @@
-[![Tests](https://github.com/bnenu/dask/actions/workflows/Tests/badge.svg)](https://github.com/bnenu/dask/actions/workflows/tests.yml)
+[![Tests](https://github.com/bnenu/dask/actions/workflows/tests.yml/badge.svg)](https://github.com/bnenu/dask/actions/workflows/tests.yml)
 
 # Descentralized jobs marketplace
 

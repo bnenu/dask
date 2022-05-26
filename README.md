@@ -63,7 +63,7 @@ cd frontend
 npm install
 ```
 
-Create a `.env` file based on the provided example (`env.example`) and set `REACT_APP_ENVIRONMENT` value to `"local"` to connect to local chain or `<testnet>` if you have the contract deployed to one of the networks. (currently supported by the scripts `rinkeby` and `mumbai`)
+Create a `.env` file based on the provided example (`env.example`) and set `NEXT_PUBLIC_ENVIRONMENT` value to `"local"` to connect to local chain or `<testnet>` if you have the contract deployed to one of the networks. (currently supported by the scripts `rinkeby` and `mumbai`)
 Also currently requires an INFURA project to connect to testnets and wallet.
 
 

@@ -41,7 +41,6 @@ contract Dask is ReentrancyGuard, Pausable {
     Status status;
     address payable owner;
     address payable assignee;
-    uint256 completeUntil;
     uint256 createdAt;
     uint256 completedAt;
     bool paid;
@@ -69,22 +68,51 @@ contract Dask is ReentrancyGuard, Pausable {
     string name,
     string description,
     uint256 reward,
+    Status status,
     address owner,
-    uint256 createdAt
+    address assignee,
+    uint256 createdAt,
+    uint completedAt,
+    bool paid
   );
-
+ 
   event TaskAssigned(
     uint id,
+    string name,
+    string description,
+    uint256 reward,
+    Status status,
     address owner,
-    address assignee
+    address assignee,
+    uint256 createdAt,
+    uint completedAt,
+    bool paid
   );
 
   event TaskCancelled(
-    uint id
+    uint id,
+    string name,
+    string description,
+    uint256 reward,
+    Status status,
+    address owner,
+    address assignee,
+    uint256 createdAt,
+    uint completedAt,
+    bool paid
   );
 
   event TaskCompleted(
-    uint id
+    uint id,
+    string name,
+    string description,
+    uint256 reward,
+    Status status,
+    address owner,
+    address assignee,
+    uint256 createdAt,
+    uint completedAt,
+    bool paid
   );
 
   constructor(uint256 _feePercent, uint256 _feeBase) {
@@ -199,6 +227,7 @@ contract Dask is ReentrancyGuard, Pausable {
   }
 
   function fetchTasksByMember(address _member) external view returns(Task[] memory) {
+
     Task[] memory _tasks = new Task[](tasksByMember[_member].length);
     for (uint256 i = 0; i < tasksByMember[_member].length; i++) {
       uint id = tasksByMember[_member][i];
@@ -210,7 +239,6 @@ contract Dask is ReentrancyGuard, Pausable {
         idToTask[id].status,
         idToTask[id].owner,
         idToTask[id].assignee,
-        idToTask[id].completeUntil,
         idToTask[id].createdAt,
         idToTask[id].completedAt,
         idToTask[id].paid
@@ -226,8 +254,7 @@ contract Dask is ReentrancyGuard, Pausable {
   // Setters
   function createTask(
     string memory _name,
-    string memory _hash,
-    uint256 _completeUntil
+    string memory _hash
   ) public payable whenNotPaused {
     require(msg.value > 0, "reward can't be zero");
     
@@ -240,7 +267,6 @@ contract Dask is ReentrancyGuard, Pausable {
     task.reward = msg.value;
     task.status = Status.NEW;
     task.owner = payable(msg.sender);
-    task.completeUntil = _completeUntil;
     task.createdAt = block.timestamp;
     hashToTask[_hash] = taskId;
     tasksByMember[msg.sender].push(taskId);
@@ -251,8 +277,12 @@ contract Dask is ReentrancyGuard, Pausable {
       _name,
       _hash,
       msg.value,
+      task.status,
       msg.sender,
-      block.timestamp
+      task.assignee,
+      block.timestamp,
+      task.completedAt,
+      task.paid
     );
   }
 
@@ -271,8 +301,15 @@ contract Dask is ReentrancyGuard, Pausable {
 
     emit TaskAssigned(
       task.id,
+    task.name,
+      task.description,
+      task.reward,
+      task.status,
       task.owner,
-      _assignee
+      _assignee,
+      task.createdAt,
+      task.completedAt,
+      task.paid
     );
   }
 
@@ -287,6 +324,19 @@ contract Dask is ReentrancyGuard, Pausable {
     task.status = Status.CANCELLED;
 
     // emit TaskCancelled;
+
+    emit TaskCancelled(
+      task.id,
+      task.name,
+      task.description,
+      task.reward,
+      task.status,
+      task.owner,
+      task.assignee,
+      task.createdAt,
+      task.completedAt,
+      task.paid
+    );
   }
 
   function completeTask(uint256 _taskId)
@@ -310,6 +360,18 @@ contract Dask is ReentrancyGuard, Pausable {
       task.status = Status.COMPLETED;
 
       // emit TaskCompleted
+      emit TaskCompleted(
+      task.id,
+      task.name,
+      task.description,
+      task.reward,
+      task.status,
+      task.owner,
+      task.assignee,
+      task.createdAt,
+      task.completedAt,
+      task.paid
+      );
     }
   }
 

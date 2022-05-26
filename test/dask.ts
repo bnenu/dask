@@ -32,6 +32,7 @@ describe("Dask", async () => {
   let feeBase = 100
 
   const defaultReward = ethers.utils.parseEther("1000");
+  const defaultHash = "1234hashstringrandom"
 
   beforeEach(async () => {
     [admin, member1, member2, member3, member4, member5] = await ethers.getSigners();
@@ -49,7 +50,7 @@ describe("Dask", async () => {
 
   // createTask
   it("should create a task", async () => {
-    await contract.connect(member1).createTask("Get apples", "1234xdresss", 500000000000000, { value: defaultReward })
+    await contract.connect(member1).createTask("Get apples", defaultHash,   { value: defaultReward })
 
     const tasks = await contract.fetchTasksByMember(member1.address)
     const task = tasks[0]
@@ -58,8 +59,7 @@ describe("Dask", async () => {
     expect(tasks.length).to.equal(1);
     expect(task.owner).to.equal(member1.address);
     expect(task.name).to.equal("Get apples")
-    expect(task.description).to.equal("1234xdresss")
-    expect(task.completeUntil).to.equal(500000000000000)
+    expect(task.description).to.equal(defaultHash)
     expect(task.reward).to.equal(defaultReward)
     expect(task.status).to.equal(Status.NEW)
   })
@@ -67,7 +67,7 @@ describe("Dask", async () => {
   it("should not create tasks with zero reward", async () => {
   await expect(
     contract.connect(member1)
-    .createTask("Get apples", "1234xdresss", 500000000000000))
+    .createTask("Get apples", defaultHash))
     .to.be.revertedWith("reward can't be zero")
   })
 
@@ -76,13 +76,13 @@ describe("Dask", async () => {
 
     await expect(
       contract.connect(member1)
-      .createTask("Get apples", "1234xdresss", 500000000000000))
+      .createTask("Get apples", defaultHash))
       .to.be.revertedWith("Pausable: paused")
   })
 
   // assignTask
   it("should assign a task", async () => {
-    await contract.connect(member1).createTask("Get apples", "1234xdresss", 500000000000000, { value: defaultReward })
+    await contract.connect(member1).createTask("Get apples", defaultHash,   { value: defaultReward })
 
     const tasks = await contract.fetchTasksByMember(member1.address)
     const task = tasks[0]
@@ -98,7 +98,7 @@ describe("Dask", async () => {
   })
 
   it("should not assign if is not called by owner", async () => {
-    await contract.connect(member1).createTask("Get apples", "1234xdresss", 500000000000000, { value: defaultReward })
+    await contract.connect(member1).createTask("Get apples", defaultHash,   { value: defaultReward })
 
     const tasks = await contract.fetchTasksByMember(member1.address)
     const task = tasks[0]
@@ -108,7 +108,7 @@ describe("Dask", async () => {
   })
 
   it("should not assign if already started", async () => {
-    await contract.connect(member1).createTask("Get apples", "1234xdresss", 500000000000000, { value: defaultReward })
+    await contract.connect(member1).createTask("Get apples", defaultHash,   { value: defaultReward })
 
     const tasks = await contract.fetchTasksByMember(member1.address)
     const task = tasks[0]
@@ -122,7 +122,7 @@ describe("Dask", async () => {
   })
 
   it("should not assign if paused", async () => {
-    await contract.connect(member1).createTask("Get apples", "1234xdresss", 500000000000000, { value: defaultReward })
+    await contract.connect(member1).createTask("Get apples", defaultHash,   { value: defaultReward })
 
     const tasks = await contract.fetchTasksByMember(member1.address)
     const task = tasks[0]
@@ -134,7 +134,7 @@ describe("Dask", async () => {
 
   // cancelTask
   it("should cancel task", async () => {
-    await contract.connect(member1).createTask("Get apples", "1234xdresss", 500000000000000, { value: defaultReward })
+    await contract.connect(member1).createTask("Get apples", defaultHash,   { value: defaultReward })
 
     const tasks = await contract.fetchTasksByMember(member1.address)
     const task = tasks[0]
@@ -147,7 +147,7 @@ describe("Dask", async () => {
   })
 
   it("should not cancel if not called by owner", async () => {
-    await contract.connect(member1).createTask("Get apples", "1234xdresss", 500000000000000, { value: defaultReward })
+    await contract.connect(member1).createTask("Get apples", defaultHash,   { value: defaultReward })
 
     const tasks = await contract.fetchTasksByMember(member1.address)
     const task = tasks[0]
@@ -156,7 +156,7 @@ describe("Dask", async () => {
   })
 
   it("should not cancel if already started", async () => {
-    await contract.connect(member1).createTask("Get apples", "1234xdresss", 500000000000000, { value: defaultReward })
+    await contract.connect(member1).createTask("Get apples", defaultHash,   { value: defaultReward })
 
     const tasks = await contract.fetchTasksByMember(member1.address)
     const task = tasks[0]
@@ -166,7 +166,7 @@ describe("Dask", async () => {
   })
 
   it("should not cancel if paused", async () => {
-    await contract.connect(member1).createTask("Get apples", "1234xdresss", 500000000000000, { value: defaultReward })
+    await contract.connect(member1).createTask("Get apples", defaultHash,   { value: defaultReward })
 
     const tasks = await contract.fetchTasksByMember(member1.address)
     const task = tasks[0]
@@ -177,7 +177,7 @@ describe("Dask", async () => {
 
   // completeTask
   it("should request complete", async () => {
-    const tx = await contract.connect(member2).createTask("Get apples", "1234xdresss", 500000000000000, { value: defaultReward })
+    const tx = await contract.connect(member2).createTask("Get apples", defaultHash,   { value: defaultReward })
     await tx.wait()
     const tasks = await contract.fetchTasksByMember(member2.address)
     const task = tasks[0]
@@ -197,7 +197,7 @@ describe("Dask", async () => {
   })
 
   it("should complete task", async () => {
-    const tx = await contract.connect(member2).createTask("Get apples", "1234xdresss", 500000000000000, { value: defaultReward })
+    const tx = await contract.connect(member2).createTask("Get apples", defaultHash,   { value: defaultReward })
     const tasks = await contract.fetchTasksByMember(member2.address)
     const task = tasks[0]
     const tx1 = await contract.connect(member2).assignTask(task.id, member1.address)
@@ -216,7 +216,7 @@ describe("Dask", async () => {
   })
 
   it("should not complete if called by non members", async () => {
-    const tx = await contract.connect(member2).createTask("Get apples", "1234xdresss", 500000000000000, { value: defaultReward })
+    const tx = await contract.connect(member2).createTask("Get apples", defaultHash,   { value: defaultReward })
     const tasks = await contract.fetchTasksByMember(member2.address)
     const task = tasks[0]
     const tx1 = await contract.connect(member2).assignTask(task.id, member1.address)
@@ -224,7 +224,7 @@ describe("Dask", async () => {
   })
 
   it("should not complete when paused", async () => {
-    const tx = await contract.connect(member2).createTask("Get apples", "1234xdresss", 500000000000000, { value: defaultReward })
+    const tx = await contract.connect(member2).createTask("Get apples", defaultHash,   { value: defaultReward })
     const tasks = await contract.fetchTasksByMember(member2.address)
     const task = tasks[0]
     const tx1 = await contract.connect(member2).assignTask(task.id, member1.address)
@@ -233,7 +233,7 @@ describe("Dask", async () => {
   })
 
   it("should not complete if task is not in progress", async () => {
-    const tx = await contract.connect(member2).createTask("Get apples", "1234xdresss", 500000000000000, { value: defaultReward })
+    const tx = await contract.connect(member2).createTask("Get apples", defaultHash,   { value: defaultReward })
     const tasks = await contract.fetchTasksByMember(member2.address)
     const task = tasks[0]
 
@@ -241,7 +241,7 @@ describe("Dask", async () => {
   })
 
   it("should not request completion twice", async () => {
-    const tx = await contract.connect(member2).createTask("Get apples", "1234xdresss", 500000000000000, { value: defaultReward })
+    const tx = await contract.connect(member2).createTask("Get apples", defaultHash,   { value: defaultReward })
     const tasks = await contract.fetchTasksByMember(member2.address)
     const task = tasks[0]
     await contract.connect(member2).assignTask(task.id, member1.address)
@@ -251,7 +251,7 @@ describe("Dask", async () => {
   
   // takeReward 
   it("should take reward", async () => {
-    const tx = await contract.connect(member2).createTask("Get apples", "1234xdresss", 500000000000000, { value: defaultReward })
+    const tx = await contract.connect(member2).createTask("Get apples", defaultHash,   { value: defaultReward })
     const tasks = await contract.fetchTasksByMember(member2.address)
     const task = tasks[0]
     await contract.connect(member2).assignTask(task.id, member1.address)
@@ -271,7 +271,7 @@ describe("Dask", async () => {
   })
 
   it("should not take reward if not colled by assignee", async () => {
-    const tx = await contract.connect(member2).createTask("Get apples", "1234xdresss", 500000000000000, { value: defaultReward })
+    const tx = await contract.connect(member2).createTask("Get apples", defaultHash,   { value: defaultReward })
     const tasks = await contract.fetchTasksByMember(member2.address)
     const task = tasks[0]
     await contract.connect(member2).assignTask(task.id, member1.address)
@@ -282,7 +282,7 @@ describe("Dask", async () => {
   })
 
   it("should not take reward when paused", async () => {
-    const tx = await contract.connect(member2).createTask("Get apples", "1234xdresss", 500000000000000, { value: defaultReward })
+    const tx = await contract.connect(member2).createTask("Get apples", defaultHash,   { value: defaultReward })
     const tasks = await contract.fetchTasksByMember(member2.address)
     const task = tasks[0]
     await contract.connect(member2).assignTask(task.id, member1.address)
@@ -294,7 +294,7 @@ describe("Dask", async () => {
   })
 
   it("should not take reward if task is not completed", async () => {
-    const tx = await contract.connect(member3).createTask("Get apples", "1234xdresss", 500000000000000, { value: defaultReward })
+    const tx = await contract.connect(member3).createTask("Get apples", defaultHash,   { value: defaultReward })
     const tasks = await contract.fetchTasksByMember(member3.address)
     const task = tasks[0]
     await contract.connect(member3).assignTask(task.id, member1.address)
@@ -304,7 +304,7 @@ describe("Dask", async () => {
   })
 
   it("should not take reward if already paid", async () => {
-    const tx = await contract.connect(member3).createTask("Get apples", "1234xdresss", 500000000000000, { value: defaultReward })
+    const tx = await contract.connect(member3).createTask("Get apples", defaultHash,   { value: defaultReward })
     const tasks = await contract.fetchTasksByMember(member3.address)
     const task = tasks[0]
     await contract.connect(member3).assignTask(task.id, member1.address)
@@ -318,7 +318,7 @@ describe("Dask", async () => {
 
   // recallReward
   it("should recall reward", async () => {
-    const tx = await contract.connect(member3).createTask("Get apples", "1234xdresss", 500000000000000, { value: defaultReward })
+    const tx = await contract.connect(member3).createTask("Get apples", defaultHash,   { value: defaultReward })
     const tasks = await contract.fetchTasksByMember(member3.address)
     const task = tasks[0]
 
@@ -339,7 +339,7 @@ describe("Dask", async () => {
   })
 
   it("should not recall reward if not called by owner", async () => {
-    const tx = await contract.connect(member3).createTask("Get apples", "1234xdresss", 500000000000000, { value: defaultReward })
+    const tx = await contract.connect(member3).createTask("Get apples", defaultHash,   { value: defaultReward })
     const tasks = await contract.fetchTasksByMember(member3.address)
     const task = tasks[0]
     contract.connect(member3).cancelTask(task.id)
@@ -347,7 +347,7 @@ describe("Dask", async () => {
   })
 
   it("should not recall reward if paused", async () => {
-    const tx = await contract.connect(member3).createTask("Get apples", "1234xdresss", 500000000000000, { value: defaultReward })
+    const tx = await contract.connect(member3).createTask("Get apples", defaultHash,   { value: defaultReward })
     const tasks = await contract.fetchTasksByMember(member3.address)
     const task = tasks[0]
     contract.connect(member3).cancelTask(task.id)
@@ -356,14 +356,14 @@ describe("Dask", async () => {
   })
 
   it("should not recall reward if task not cancelled", async () => {
-    const tx = await contract.connect(member3).createTask("Get apples", "1234xdresss", 500000000000000, { value: defaultReward })
+    const tx = await contract.connect(member3).createTask("Get apples", defaultHash,   { value: defaultReward })
     const tasks = await contract.fetchTasksByMember(member3.address)
     const task = tasks[0]
     await expect(contract.connect(member3).recallReward(task.id)).to.be.revertedWith("task must be cancelled")
   })
 
   it("should not recall reward if task is paid", async () => {
-    const tx = await contract.connect(member3).createTask("Get apples", "1234xdresss", 500000000000000, { value: defaultReward })
+    const tx = await contract.connect(member3).createTask("Get apples", defaultHash,   { value: defaultReward })
     const tasks = await contract.fetchTasksByMember(member3.address)
     const task = tasks[0]
     await contract.connect(member3).cancelTask(task.id)
@@ -373,7 +373,7 @@ describe("Dask", async () => {
 
   // raiseClaim
   it("should raise claim", async () => {
-    const tx = await contract.connect(member3).createTask("Get apples", "1234xdresss", 500000000000000, { value: defaultReward })
+    const tx = await contract.connect(member3).createTask("Get apples", defaultHash,   { value: defaultReward })
     const tasks = await contract.fetchTasksByMember(member3.address)
     const task = tasks[0]
 
@@ -398,7 +398,7 @@ describe("Dask", async () => {
   })
 
   it("should not raise claim if called by non members", async () => {
-    const tx = await contract.connect(member3).createTask("Get apples", "1234xdresss", 500000000000000, { value: defaultReward })
+    const tx = await contract.connect(member3).createTask("Get apples", defaultHash,   { value: defaultReward })
     const tasks = await contract.fetchTasksByMember(member3.address)
     const task = tasks[0]
 
@@ -406,7 +406,7 @@ describe("Dask", async () => {
   })
 
   it("should not raise claim if already paid", async () => {
-    const tx = await contract.connect(member3).createTask("Get apples", "1234xdresss", 500000000000000, { value: defaultReward })
+    const tx = await contract.connect(member3).createTask("Get apples", defaultHash,   { value: defaultReward })
     const tasks = await contract.fetchTasksByMember(member3.address)
     const task = tasks[0]
 
@@ -419,7 +419,7 @@ describe("Dask", async () => {
   })
 
   it("should not raise claim if claim is higher than reward", async () => {
-    const tx = await contract.connect(member3).createTask("Get apples", "1234xdresss", 500000000000000, { value: defaultReward })
+    const tx = await contract.connect(member3).createTask("Get apples", defaultHash,   { value: defaultReward })
     const tasks = await contract.fetchTasksByMember(member3.address)
     const task = tasks[0]
 
@@ -429,7 +429,7 @@ describe("Dask", async () => {
   })
 
   it("should not raise claim if claim and previous claims are higher than reward", async () => {
-    const tx = await contract.connect(member3).createTask("Get apples", "1234xdresss", 500000000000000, { value: defaultReward })
+    const tx = await contract.connect(member3).createTask("Get apples", defaultHash,   { value: defaultReward })
     const tasks = await contract.fetchTasksByMember(member3.address)
     const task = tasks[0]
 
@@ -441,7 +441,7 @@ describe("Dask", async () => {
 
   // settleClaim
   it("should approve claim", async () => {
-    const tx = await contract.connect(member4).createTask("Get apples", "1234xdresss", 500000000000000, { value: defaultReward })
+    const tx = await contract.connect(member4).createTask("Get apples", defaultHash,   { value: defaultReward })
     const tasks = await contract.fetchTasksByMember(member4.address)
     const task = tasks[0]
 
@@ -466,7 +466,7 @@ describe("Dask", async () => {
   });
 
   it("should reject claim", async () => {
-    const tx = await contract.connect(member4).createTask("Get apples", "1234xdresss", 500000000000000, { value: defaultReward })
+    const tx = await contract.connect(member4).createTask("Get apples", defaultHash,   { value: defaultReward })
     const tasks = await contract.fetchTasksByMember(member4.address)
     const task = tasks[0]
 
@@ -487,7 +487,7 @@ describe("Dask", async () => {
   })
 
   it("should dispute claim", async () => {
-    const tx = await contract.connect(member4).createTask("Get apples", "1234xdresss", 500000000000000, { value: defaultReward })
+    const tx = await contract.connect(member4).createTask("Get apples", defaultHash,   { value: defaultReward })
     const tasks = await contract.fetchTasksByMember(member4.address)
     const task = tasks[0]
 
@@ -508,7 +508,7 @@ describe("Dask", async () => {
   })
 
   it("should not settle if not called by admin", async () => {
-    const tx = await contract.connect(member4).createTask("Get apples", "1234xdresss", 500000000000000, { value: defaultReward })
+    const tx = await contract.connect(member4).createTask("Get apples", defaultHash,   { value: defaultReward })
     const tasks = await contract.fetchTasksByMember(member4.address)
     const task = tasks[0]
 
@@ -522,7 +522,7 @@ describe("Dask", async () => {
   })
 
   it("should not settle if paused", async () => {
-    const tx = await contract.connect(member4).createTask("Get apples", "1234xdresss", 500000000000000, { value: defaultReward })
+    const tx = await contract.connect(member4).createTask("Get apples", defaultHash,   { value: defaultReward })
     const tasks = await contract.fetchTasksByMember(member4.address)
     const task = tasks[0]
 
@@ -538,7 +538,7 @@ describe("Dask", async () => {
   })
 
   it("should not settle for non task members", async () => {
-    const tx = await contract.connect(member4).createTask("Get apples", "1234xdresss", 500000000000000, { value: defaultReward })
+    const tx = await contract.connect(member4).createTask("Get apples", defaultHash,   { value: defaultReward })
     const tasks = await contract.fetchTasksByMember(member4.address)
     const task = tasks[0]
 
@@ -552,7 +552,7 @@ describe("Dask", async () => {
   })
 
   it("should not settle if already resolved", async () => {
-    const tx = await contract.connect(member4).createTask("Get apples", "1234xdresss", 500000000000000, { value: defaultReward })
+    const tx = await contract.connect(member4).createTask("Get apples", defaultHash,   { value: defaultReward })
     const tasks = await contract.fetchTasksByMember(member4.address)
     const task = tasks[0]
 
@@ -570,7 +570,7 @@ describe("Dask", async () => {
   })
 
   it("should not settle if claim not open", async () => {
-    const tx = await contract.connect(member4).createTask("Get apples", "1234xdresss", 500000000000000, { value: defaultReward })
+    const tx = await contract.connect(member4).createTask("Get apples", defaultHash,   { value: defaultReward })
     const tasks = await contract.fetchTasksByMember(member4.address)
     const task = tasks[0]
 
@@ -613,7 +613,7 @@ describe("Dask", async () => {
 
   // takeFees
   it("should take fees", async () => {
-    const tx = await contract.connect(member4).createTask("Get apples", "1234xdresss", 500000000000000, { value: defaultReward })
+    const tx = await contract.connect(member4).createTask("Get apples", defaultHash,   { value: defaultReward })
     const tasks = await contract.fetchTasksByMember(member4.address)
     const task = tasks[0]
 
@@ -641,7 +641,7 @@ describe("Dask", async () => {
   })
 
   it("should not take fees if no amount provided", async () => {
-    const tx = await contract.connect(member4).createTask("Get apples", "1234xdresss", 500000000000000, { value: defaultReward })
+    const tx = await contract.connect(member4).createTask("Get apples", defaultHash,   { value: defaultReward })
     const tasks = await contract.fetchTasksByMember(member4.address)
     const task = tasks[0]
 
@@ -655,7 +655,7 @@ describe("Dask", async () => {
   })
 
   it("should not take fees if amount provided is to large", async () => {
-    const tx = await contract.connect(member4).createTask("Get apples", "1234xdresss", 500000000000000, { value: defaultReward })
+    const tx = await contract.connect(member4).createTask("Get apples", defaultHash,   { value: defaultReward })
     const tasks = await contract.fetchTasksByMember(member4.address)
     const task = tasks[0]
 
@@ -670,7 +670,7 @@ describe("Dask", async () => {
 
 
   it("should not take fees when paused", async () => {
-    const tx = await contract.connect(member4).createTask("Get apples", "1234xdresss", 500000000000000, { value: defaultReward })
+    const tx = await contract.connect(member4).createTask("Get apples", defaultHash,   { value: defaultReward })
     const tasks = await contract.fetchTasksByMember(member4.address)
     const task = tasks[0]
 
@@ -686,7 +686,7 @@ describe("Dask", async () => {
 
   // refund
   it("should refund", async () => {
-    const tx = await contract.connect(member4).createTask("Get apples", "1234xdresss", 500000000000000, { value: defaultReward })
+    const tx = await contract.connect(member4).createTask("Get apples", defaultHash,   { value: defaultReward })
     const tasks = await contract.fetchTasksByMember(member4.address)
     const task = tasks[0]
 
@@ -700,7 +700,7 @@ describe("Dask", async () => {
   })
 
   it("should not refund if not called by admin", async () => {
-    const tx = await contract.connect(member4).createTask("Get apples", "1234xdresss", 500000000000000, { value: defaultReward })
+    const tx = await contract.connect(member4).createTask("Get apples", defaultHash,   { value: defaultReward })
     const tasks = await contract.fetchTasksByMember(member4.address)
     const task = tasks[0]
 
@@ -708,7 +708,7 @@ describe("Dask", async () => {
   })
 
   it("should not refund if task already paid", async () => {
-    const tx = await contract.connect(member4).createTask("Get apples", "1234xdresss", 500000000000000, { value: defaultReward })
+    const tx = await contract.connect(member4).createTask("Get apples", defaultHash,   { value: defaultReward })
     const tasks = await contract.fetchTasksByMember(member4.address)
     const task = tasks[0]
 
@@ -722,7 +722,7 @@ describe("Dask", async () => {
   })
 
   it("should not refund if amount is larger than reward", async () => {
-    const tx = await contract.connect(member5).createTask("Get apples", "1234xdresss", 500000000000000, { value: defaultReward })
+    const tx = await contract.connect(member5).createTask("Get apples", defaultHash,   { value: defaultReward })
     const tasks = await contract.fetchTasksByMember(member5.address)
     const task = tasks[0]
 
@@ -731,7 +731,7 @@ describe("Dask", async () => {
   })
 
   it("should not refund non task members", async () => {
-    const tx = await contract.connect(member5).createTask("Get apples", "1234xdresss", 500000000000000, { value: defaultReward })
+    const tx = await contract.connect(member5).createTask("Get apples", defaultHash,   { value: defaultReward })
     const tasks = await contract.fetchTasksByMember(member5.address)
     const task = tasks[0]
 
@@ -764,15 +764,15 @@ describe("Dask", async () => {
 
   //fetchTaskByHash
   it("should fetch task by hash", async () => {
-    const tx = await contract.connect(member5).createTask("Get apples", "1234xdresss", 500000000000000, { value: defaultReward })
+    const tx = await contract.connect(member5).createTask("Get apples", defaultHash,   { value: defaultReward })
 
-    const task = await contract.fetchTaskByHash("1234xdresss")
+    const task = await contract.fetchTaskByHash(defaultHash)
     expect(task.owner).to.equal(member5.address)
   })
 
     //fetchTaskById
     it("should fetch task by hash", async () => {
-      const tx = await contract.connect(member5).createTask("Get apples", "1234xdresss", 500000000000000, { value: defaultReward })
+      const tx = await contract.connect(member5).createTask("Get apples", defaultHash,   { value: defaultReward })
       const tasks = await contract.fetchTasksByMember(member5.address)
       const task = tasks[0]
 

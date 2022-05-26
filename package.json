@@ -6,7 +6,7 @@
     "test": "npx hardhat test",
     "deploy": "npx hardhat run scripts/deploy.ts --network",
     "deploy:local": "npx hardhat run scripts/deploy.ts --network localhost",
-    "seed": "npx hardhat run scripts/seed-mocks.ts --network localhost"
+    "seed": "npx hardhat run scripts/seed.ts --network localhost"
   },
   "author": "Bogdan Nenu",
   "license": "ISC",

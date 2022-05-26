@@ -42,6 +42,21 @@ export const AccountProvider = ({
     return modal;
   };
 
+  const getWalletProvider = () => {
+    if ( window && window.ethereum) {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+
+      console.log({ signer });
+
+      setAccountProvider(provider);
+    }
+  };
+
+  useEffect(() => {
+    getWalletProvider();
+  }, []);
+
   const connect = async () => {
     try {
       const modal = getWeb3Modal();
@@ -50,7 +65,7 @@ export const AccountProvider = ({
       const accounts = await provider.listAccounts();
 
       setAccount(accounts[0]);
-      setAccountProvider(provider);
+      // setAccountProvider(provider);
     } catch (err) {
       console.error(err);
     }

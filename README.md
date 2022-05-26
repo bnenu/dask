@@ -1,4 +1,5 @@
 [![Tests](https://github.com/bnenu/dask/actions/workflows/tests.yml/badge.svg)](https://github.com/bnenu/dask/actions/workflows/tests.yml)
+[![codecov](https://codecov.io/gh/bnenu/dask/branch/main/graph/badge.svg?token=JNZH40U6FC)](https://codecov.io/gh/bnenu/dask)
 
 # Descentralized jobs marketplace
 

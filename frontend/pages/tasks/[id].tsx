@@ -7,6 +7,7 @@ import { useData } from '../../contexts/dataContext'
 import { FeedStatus } from '../../components/FeedStatus'
 import { Status } from '../../types'
 import { useAccount } from '../../contexts/accountContext'
+import Link from 'next/link'
 
 const Task: NextPage = () => {
   const router = useRouter()
@@ -47,7 +48,7 @@ const Task: NextPage = () => {
   }
   const handleRaiseClaim = async () => {
     console.log({ amount })
-    if(amount) {
+    if (amount) {
       await raiseClaim(id, amount)
     }
   }
@@ -59,6 +60,25 @@ const Task: NextPage = () => {
           <div className="bg-white px-4 py-5 border-b border-gray-200 sm:px-6">
             <div className="-ml-4 -mt-2 flex items-center justify-between flex-wrap sm:flex-nowrap">
               <div className="ml-4 mt-2 flex items-center">
+                <Link href="/">
+                  <button
+                    type="button"
+                    className="inline-flex items-center p-2 border border-purple-700 rounded-full shadow-sm text-white bg-transparent hover:bg-purple-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5"
+                      viewBox="0 0 20 20"
+                      fill="purple"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </button>
+                </Link>
                 <FeedStatus status={task.status} />
                 <h3 className="text-lg leading-6 font-medium text-gray-900 ml-2">
                   {task.name}
@@ -108,15 +128,17 @@ const Task: NextPage = () => {
                     Mark Complete
                   </button>
                 )}
-                {account === task.owner && task.status === Status.CANCELLED && !task.paid && (
-                  <button
-                    type="button"
-                    onClick={handleRecall}
-                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 mr-2"
-                  >
-                    Recall reward
-                  </button>
-                )}
+                {account === task.owner &&
+                  task.status === Status.CANCELLED &&
+                  !task.paid && (
+                    <button
+                      type="button"
+                      onClick={handleRecall}
+                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 mr-2"
+                    >
+                      Recall reward
+                    </button>
+                  )}
                 {account === task.assignee && task.status === Status.COMPLETED && (
                   <button
                     type="button"

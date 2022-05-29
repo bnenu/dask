@@ -49,7 +49,7 @@ Create a `.env` file based on the 'env.example' and provide the network url
 (usually provided by INFURA or other provider).
 
 ```
-npm run deploy -- --<network>
+npm run deploy -- <network>
 ```
 (Ex: `npm run deploy -- --rinkeby`)
 Requires provision of the owner for the target network.
@@ -74,7 +74,7 @@ Also currently requires an INFURA project to connect to testnets and wallet.
 
 #### Start development server
 ```
-npm start
+npm run dev
 ```
 Open `http://localhost:3000` in browser
 

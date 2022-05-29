@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { ethers } from 'ethers'
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
@@ -8,6 +9,7 @@ import { FeedStatus } from '../../components/FeedStatus'
 import { Status } from '../../types'
 import { useAccount } from '../../contexts/accountContext'
 import Link from 'next/link'
+import { formatDate } from '../../utils/dates'
 
 const Task: NextPage = () => {
   const router = useRouter()
@@ -148,58 +150,73 @@ const Task: NextPage = () => {
                     Take reward
                   </button>
                 )}
-                {!task.paid && (
-                  <>
-                    <div>
-                      <label htmlFor="assignee" className="sr-only">
-                        Assignee
-                      </label>
-                      <input
-                        onChange={(e) => setAmount(e.target.value)}
-                        type="text"
-                        name="amount"
-                        id="amount"
-                        className="w-64 shadow-sm focus:ring-purple-500 focus:border-purple-500 block w-full sm:text-sm border-gray-300 rounded-md p-2"
-                        placeholder="enter an amount"
-                      />
-                    </div>
-                    <button
-                      type="button"
-                      onClick={handleRaiseClaim}
-                      disabled={!amount}
-                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-purple-400 bg-transparent border-purple-400 hover:bg-purple-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
-                    >
-                      Make a claim
-                    </button>
-                  </>
-                )}
+                {!task.paid &&
+                  (account === task.owner || account === task.assignee) && (
+                    <>
+                      <div>
+                        <label htmlFor="assignee" className="sr-only">
+                          Assignee
+                        </label>
+                        <input
+                          onChange={(e) => setAmount(e.target.value)}
+                          type="text"
+                          name="amount"
+                          id="amount"
+                          className="w-64 shadow-sm focus:ring-purple-500 focus:border-purple-500 block w-full sm:text-sm border-gray-300 rounded-md p-2"
+                          placeholder="enter an amount"
+                        />
+                      </div>
+                      <button
+                        type="button"
+                        onClick={handleRaiseClaim}
+                        disabled={!amount}
+                        className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-purple-400 bg-transparent border-purple-400 hover:bg-purple-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+                      >
+                        Make a claim
+                      </button>
+                    </>
+                  )}
               </div>
             </div>
           </div>
-          <div className="flex flex-col">
+          <div className="flex flex-col p-6">
             <div className="flex">
-              <h4>Reward</h4>
-              <p>{task.reward.toString()}</p>
+              <h4 className="text-md font-bold text-purple-400 mr-2">Reward</h4>
+              <p>{ethers.utils.formatEther(task.reward)} ETH</p>
             </div>
             <div className="flex">
-              <h4>Owner</h4>
+              <h4 className="text-md font-bold text-purple-400 mr-2">Owner</h4>
               <p>{task.owner}</p>
             </div>
             <div className="flex">
-              <h4>Assignee</h4>
-              <p>{task.assignee}</p>
+              <h4 className="text-md font-bold text-purple-400 mr-2">
+                Assignee
+              </h4>
+              <p>
+                {task.assignee === ethers.constants.AddressZero
+                  ? 'Not assigned'
+                  : task.assignee}
+              </p>
             </div>
             <div className="flex">
-              <h4>Created at</h4>
-              <p>{task.createdAt.toString()}</p>
+              <h4 className="text-md font-bold text-purple-400 mr-2">
+                Created at
+              </h4>
+              <p>{formatDate(task.createdAt.toString())}</p>
             </div>
             <div className="flex">
-              <h4>Completed at</h4>
-              <p>{task.completedAt.toString()}</p>
+              <h4 className="text-md font-bold text-purple-400 mr-2">
+                Completed at
+              </h4>
+              <p>
+                {task.completedAt.toString() === '0'
+                  ? '-'
+                  : formatDate(task.completedAt.toString())}
+              </p>
             </div>
             <div className="flex">
-              <h4>Paid</h4>
-              <p>{task.paid.toString()}</p>
+              <h4 className="text-md font-bold text-purple-400 mr-2">Paid</h4>
+              <p>{task.paid ? 'Yes' : 'No'}</p>
             </div>
           </div>
         </div>

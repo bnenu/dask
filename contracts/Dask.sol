@@ -54,6 +54,7 @@ contract Dask is ReentrancyGuard, Pausable {
     ClaimResolution resolution;
   }
 
+  uint[] public tasks;
   mapping(uint256 => Task) private idToTask;
   mapping(string => uint256) private hashToTask;
   mapping(uint256 => mapping(address => bool)) public completed;
@@ -247,6 +248,10 @@ contract Dask is ReentrancyGuard, Pausable {
      return _tasks;
   }
 
+  function fetchTaskIds() public view returns (uint[] memory) {
+    return tasks;
+  }
+
   function fetchClaimById(uint _claimId) external view returns (Claim memory) {
     return idToClaim[_claimId];
   }
@@ -270,6 +275,7 @@ contract Dask is ReentrancyGuard, Pausable {
     task.createdAt = block.timestamp;
     hashToTask[_hash] = taskId;
     tasksByMember[msg.sender].push(taskId);
+    tasks.push(taskId);
     // emit TaskCreated
 
     emit TaskCreated(
@@ -301,7 +307,7 @@ contract Dask is ReentrancyGuard, Pausable {
 
     emit TaskAssigned(
       task.id,
-    task.name,
+      task.name,
       task.description,
       task.reward,
       task.status,

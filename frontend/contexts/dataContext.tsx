@@ -9,7 +9,13 @@ import React, {
 import { ethers } from 'ethers'
 import { useContract } from './contractContext'
 import { useAccount } from './accountContext'
-import { EventTypes, EventName } from '../types'
+import {
+  EventTypes,
+  EventName,
+  Status,
+  mapStatusToKey,
+  StatusValue,
+} from '../types'
 
 export type DataProviderProps = {
   children: React.ReactNode
@@ -19,6 +25,7 @@ export type State = {
   myTasks: []
   feed: []
   tasks: {}
+  NEW: []
 }
 
 export type StateAction = {
@@ -56,12 +63,14 @@ const normalizeById = (xs) =>
     }
   }, {})
 
+const prop = (k: string) => (obj: Record<string, any>) => obj[k]
+
 const reducer = (state: State, action: StateAction) => {
   switch (action.type) {
     case 'RECEIVED_MY_TASKS':
       return {
         ...state,
-        myTasks: action.payload.map((x) => x.id),
+        myTasks: action.payload.map(prop('id')),
         tasks: {
           ...state.tasks,
           ...normalizeById(action.payload),
@@ -75,6 +84,21 @@ const reducer = (state: State, action: StateAction) => {
           ...state.tasks,
           [action.payload.id]: action.payload,
         },
+      }
+    case 'CLEAR_FEED':
+    return {
+      ...state,
+      feed: []
+    }
+    case 'TASKS_BY_STATUS':
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          ...normalizeById(action.payload.tasks),
+        },
+        [mapStatusToKey[action.payload.status as StatusValue]]:
+          action.payload.tasks.map(prop('id')),
       }
     default:
       throw new Error()
@@ -102,13 +126,27 @@ export const DataProvider = ({ children }: DataProviderProps) => {
     fetchMyTasks()
   }, [account])
 
+  // load open tasks
+  useEffect(() => {
+    const init = async () => {
+      await fetchTasksByStatus(Status.NEW)
+    }
+
+    init()
+  }, [contract])
+
   // subscribe to tasks feed
   useEffect(() => {
+    // @ts-ignore
+    dispatch({ type: 'CLEAR_FEED'})
     contract?.on('TaskCreated', taskHandler)
     contract?.on('TaskAssigned', taskHandler)
     contract?.on('TaskCancelled', taskHandler)
     contract?.on('TaskCompleted', taskHandler)
-    // console.log('listeners ', contract?.listenerCount())
+    //
+    return () => {
+      contract?.removeAllListeners()
+    }
   }, [contract])
 
   const taskHandler = useCallback(
@@ -125,7 +163,6 @@ export const DataProvider = ({ children }: DataProviderProps) => {
       paid: boolean,
       event: any
     ) => {
-      console.log({ event })
       const task = {
         id: taskId,
         name,
@@ -238,6 +275,40 @@ export const DataProvider = ({ children }: DataProviderProps) => {
       console.error({ error: err })
     }
   }, [contract, account])
+
+  const fetchTaskById = useCallback(
+    async (id) => {
+      let task
+      try {
+        task = await contract?.fetchTaskById(id)
+      } catch (err) {
+        console.error(err)
+      }
+
+      return task
+    },
+    [contract]
+  )
+
+  const fetchTasksByStatus = useCallback(
+    async (status) => {
+      const allIds = await contract?.fetchTaskIds()
+      let byStatus = []
+
+      for (let i = 0; i <= allIds.length; i++) {
+        const t = await fetchTaskById(allIds[i])
+        if (t && t.status === status) {
+          byStatus.push(t)
+        }
+      }
+      // @ts-ignore
+      dispatch({
+        type: 'TASKS_BY_STATUS',
+        payload: { status, tasks: byStatus },
+      })
+    },
+    [contract]
+  )
 
   return (
     <DataContext.Provider

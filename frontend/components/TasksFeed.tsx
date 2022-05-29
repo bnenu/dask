@@ -2,7 +2,8 @@ import React from 'react'
 import { useData } from '../contexts/dataContext'
 import { Status } from '../types'
 import { capitalize } from '../utils/strings'
-import { FeedStatus  } from './FeedStatus'
+import { FeedStatus } from './FeedStatus'
+import { formatDate } from '../utils/dates'
 
 export const TasksFeed = () => {
   const { state } = useData()
@@ -41,7 +42,7 @@ const FeedItem = ({ item }) => {
               </p>
             </div>
             <div className="text-right text-sm whitespace-nowrap text-gray-500">
-              <p>{task.createdAt.toString()}</p>
+              <p>{formatDate(task.createdAt.toString())}</p>
             </div>
           </div>
         </div>

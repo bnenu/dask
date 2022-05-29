@@ -56,7 +56,6 @@ npm run deploy -- <network>
 ```
 (Ex: `npm run deploy -- --rinkeby`)
 Requires provision of the owner for the target network.
-*THIS CONTRACT HAS NOT BEEN TESTED ON ANY TESTNET YET*
 
 #### Run tests
 ```

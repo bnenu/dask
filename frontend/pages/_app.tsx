@@ -4,7 +4,6 @@ import { ContractProvider } from '../contexts/contractContext'
 import { AccountProvider } from '../contexts/accountContext'
 import { DataProvider } from '../contexts/dataContext'
 import Head from 'next/head'
-import Image from 'next/image'
 import { Header } from '../components/Header'
 
 function MyApp(props: AppProps) {

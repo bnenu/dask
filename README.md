@@ -7,6 +7,10 @@ This is a job marketplace backed by a smart contract.
 The project was built following the course **6-Figure Blockchain Developer**
 from [EatTheBlocks](https://eattheblocks.com)
 
+It allows users to create tasks on the blockchain and provide funds to these
+tasks, assign tasks to other users and track completion of these tasks. It also
+has a claims system to manage disputes.
+
 It includes the dex contract, scripts to run and deploy local or on testnets and a basic front-end app that connects to the contract.
 
 The stack used `Solidity`, `Typescript`, `Hardhat`, `EthersJS`, `NextJS` (create-next-app), `TailwindCSS`

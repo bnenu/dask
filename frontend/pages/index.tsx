@@ -10,7 +10,7 @@ const Home: NextPage = () => {
   return (
     <div className="flex w-full flex-1 py-8 justify-between">
       <TasksFeed />
-      <div className="">
+      <div className=" ml-8">
         <div className="mb-4">
           <OpenTasks />
         </div>

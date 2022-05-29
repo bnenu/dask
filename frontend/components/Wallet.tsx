@@ -1,5 +1,4 @@
-import React from 'react'
-import { Account, useAccount } from '../contexts/accountContext'
+import { Account, useAccount } from 'contexts/accountContext'
 
 export const Wallet = () => {
   const { account } = useAccount()
@@ -12,7 +11,12 @@ export const Wallet = () => {
 
   return (
     <div className="w-24">
-      <p className="text-white truncate overflow-hidden" onClick={copy(account)}>{account}</p>
+      <p
+        className="text-white truncate overflow-hidden"
+        onClick={copy(account)}
+      >
+        {account}
+      </p>
     </div>
   )
 }

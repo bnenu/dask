@@ -1,6 +1,6 @@
 import React from 'react'
 import { useData } from '../contexts/dataContext'
-import { Status } from '../types'
+import { Status, StatusValue } from '../types'
 import { capitalize } from '../utils/strings'
 import { FeedStatus } from './FeedStatus'
 import { formatDate } from '../utils/dates'
@@ -22,7 +22,10 @@ export const TasksFeed = () => {
   )
 }
 
-const FeedItem = ({ item }) => {
+type FeedItemProps = {
+  item: Record<string, any>
+}
+const FeedItem = ({ item }: FeedItemProps) => {
   const { event, task } = item
 
   return (
@@ -51,7 +54,11 @@ const FeedItem = ({ item }) => {
   )
 }
 
-const FeedItemIcon = ({ status }) => {
+type FeedItemIconProps = {
+  status: StatusValue
+}
+
+const FeedItemIcon = ({ status }: FeedItemIconProps) => {
   if (status === Status.NEW) {
     return (
       <div>

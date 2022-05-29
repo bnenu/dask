@@ -2,7 +2,9 @@ import React, { useState } from 'react'
 import { create } from 'ipfs-http-client'
 import { useData } from '../contexts/dataContext'
 
+// @ts-ignore
 const client = create('https://ipfs.infura.io:5001/api/v0')
+
 const initialState = { name: '', description: '', amount: '0' }
 
 type TaskForm = {
@@ -34,6 +36,7 @@ export const CreateTask = () => {
     const hash = await savePostToIpfs(form)
 
     setSubmitting(true)
+    // @ts-ignore
     await createTask(form.name, hash, form.amount)
     setSubmitting(false)
     toggleCreateTask()

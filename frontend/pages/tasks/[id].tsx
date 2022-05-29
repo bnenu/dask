@@ -15,6 +15,7 @@ const Task: NextPage = () => {
   const router = useRouter()
   const { account } = useAccount()
   const { id } = router.query
+  const taskId = id && ethers.BigNumber.from(id)
   const {
     cancelTask,
     completeTask,
@@ -24,34 +25,37 @@ const Task: NextPage = () => {
     raiseClaim,
     state,
   } = useData()
-  const task = state.tasks[id]
+  const task = state.tasks[id as string]
   const [assignee, setAssignee] = useState<string>('')
   const [amount, setAmount] = useState<string>('')
 
+  if(!taskId) {
+    return null;
+  }
+
   const handleAssign = async () => {
-    console.log({ assignee })
     if (assignee) {
-      await assignTask(id, assignee)
+      await assignTask(taskId, assignee)
     }
   }
 
   const handleCancel = async () => {
-    await cancelTask(id)
+    await cancelTask(taskId)
   }
 
   const handleComplete = async () => {
-    await completeTask(id)
+    await completeTask(taskId)
   }
   const handleRecall = async () => {
-    await recallReward(id)
+    await recallReward(taskId)
   }
   const handleTakeReward = async () => {
-    await takeReward(id)
+    await takeReward(taskId)
   }
   const handleRaiseClaim = async () => {
     console.log({ amount })
     if (amount) {
-      await raiseClaim(id, amount)
+      await raiseClaim(taskId, amount)
     }
   }
 
@@ -81,13 +85,13 @@ const Task: NextPage = () => {
                     </svg>
                   </button>
                 </Link>
-                <FeedStatus status={task.status} />
+                <FeedStatus status={task?.status} />
                 <h3 className="text-lg leading-6 font-medium text-gray-900 ml-2">
-                  {task.name}
+                  {task?.name}
                 </h3>
               </div>
               <div className="ml-4 mt-2 flex-shrink-0 flex align-center">
-                {account === task.owner && task.status === Status.NEW && (
+                {account === task?.owner && task?.status === Status.NEW && (
                   <div className="mr-2">
                     <label htmlFor="assignee" className="sr-only">
                       Assignee
@@ -102,7 +106,7 @@ const Task: NextPage = () => {
                     />
                   </div>
                 )}
-                {account === task.owner && task.status === Status.NEW && (
+                {account === task?.owner && task?.status === Status.NEW && (
                   <>
                     <button
                       type="button"
@@ -121,7 +125,7 @@ const Task: NextPage = () => {
                     </button>
                   </>
                 )}
-                {task.status === Status.ASSIGNED && (
+                {task?.status === Status.ASSIGNED && (
                   <button
                     type="button"
                     onClick={handleComplete}
@@ -130,9 +134,9 @@ const Task: NextPage = () => {
                     Mark Complete
                   </button>
                 )}
-                {account === task.owner &&
-                  task.status === Status.CANCELLED &&
-                  !task.paid && (
+                {account === task?.owner &&
+                  task?.status === Status.CANCELLED &&
+                  !task?.paid && (
                     <button
                       type="button"
                       onClick={handleRecall}
@@ -141,7 +145,7 @@ const Task: NextPage = () => {
                       Recall reward
                     </button>
                   )}
-                {account === task.assignee && task.status === Status.COMPLETED && (
+                {account === task?.assignee && task?.status === Status.COMPLETED && (
                   <button
                     type="button"
                     onClick={handleTakeReward}
@@ -150,8 +154,8 @@ const Task: NextPage = () => {
                     Take reward
                   </button>
                 )}
-                {!task.paid &&
-                  (account === task.owner || account === task.assignee) && (
+                {!task?.paid &&
+                  (account === task?.owner || account === task?.assignee) && (
                     <>
                       <div>
                         <label htmlFor="assignee" className="sr-only">
@@ -182,41 +186,41 @@ const Task: NextPage = () => {
           <div className="flex flex-col p-6">
             <div className="flex">
               <h4 className="text-md font-bold text-purple-400 mr-2">Reward</h4>
-              <p>{ethers.utils.formatEther(task.reward)} ETH</p>
+              <p>{ethers.utils.formatEther(task?.reward)} ETH</p>
             </div>
             <div className="flex">
               <h4 className="text-md font-bold text-purple-400 mr-2">Owner</h4>
-              <p>{task.owner}</p>
+              <p>{task?.owner}</p>
             </div>
             <div className="flex">
               <h4 className="text-md font-bold text-purple-400 mr-2">
                 Assignee
               </h4>
               <p>
-                {task.assignee === ethers.constants.AddressZero
+                {task?.assignee === ethers.constants.AddressZero
                   ? 'Not assigned'
-                  : task.assignee}
+                  : task?.assignee}
               </p>
             </div>
             <div className="flex">
               <h4 className="text-md font-bold text-purple-400 mr-2">
                 Created at
               </h4>
-              <p>{formatDate(task.createdAt.toString())}</p>
+              <p>{formatDate(task?.createdAt.toString())}</p>
             </div>
             <div className="flex">
               <h4 className="text-md font-bold text-purple-400 mr-2">
                 Completed at
               </h4>
               <p>
-                {task.completedAt.toString() === '0'
+                {task?.completedAt.toString() === '0'
                   ? '-'
                   : formatDate(task.completedAt.toString())}
               </p>
             </div>
             <div className="flex">
               <h4 className="text-md font-bold text-purple-400 mr-2">Paid</h4>
-              <p>{task.paid ? 'Yes' : 'No'}</p>
+              <p>{task?.paid ? 'Yes' : 'No'}</p>
             </div>
           </div>
         </div>

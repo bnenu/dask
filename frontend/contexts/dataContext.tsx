@@ -15,6 +15,7 @@ import {
   Status,
   mapStatusToKey,
   StatusValue,
+  Task
 } from '../types'
 
 export type DataProviderProps = {
@@ -24,7 +25,7 @@ export type DataProviderProps = {
 export type State = {
   myTasks: []
   feed: []
-  tasks: {}
+  tasks: Record<string, any>
   NEW: []
 }
 
@@ -55,7 +56,7 @@ const initialState = {
   tasks: {},
 }
 
-const normalizeById = (xs) =>
+const normalizeById = (xs: Task[]) =>
   xs.reduce((acc, next) => {
     return {
       ...acc,

@@ -1,7 +1,7 @@
 import React from 'react'
 import { ethers } from 'ethers'
 import { useData } from '../contexts/dataContext'
-import { Status } from '../types'
+import { Status, StatusValue } from '../types'
 import Link from 'next/link'
 
 export const MyTasks = () => {
@@ -26,13 +26,17 @@ export const MyTasks = () => {
   )
 }
 
-const TaskItem = ({ taskId }) => {
+type TaskItemProps = {
+  taskId: string
+}
+
+const TaskItem = ({ taskId }: TaskItemProps) => {
   const { state } = useData()
   const { tasks } = state
   const task = tasks[taskId]
   return (
     <li>
-      <Link href={`/tasks/${task.id}`}>
+      <Link href={`/tasks/${task.id.toString()}`}>
         <a className="block hover:bg-gray-50">
           <div className="flex items-center px-4 py-4 sm:px-6">
             <div className="min-w-0 flex-1 flex items-center">
@@ -90,7 +94,11 @@ const TaskItem = ({ taskId }) => {
   )
 }
 
-const TaskIcon = ({ status }) => {
+type TaskIconProps = {
+  status: StatusValue
+}
+
+const TaskIcon = ({ status }: TaskIconProps) => {
   if (status === Status.NEW) {
     return (
       <svg

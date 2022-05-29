@@ -13,6 +13,19 @@ export type State =
   | 'SUSPENDED'
   | 'COMPLETED'
 
+export type Task = {
+  id: any,
+  name: string,
+  description: string
+  reward: any
+  status: StatusValue
+  owner: string
+  assignee: string
+  createdAt: any
+  completedAt: any
+  paid: boolean
+  event: any
+}
 export const EventTypes: Record<EventName, string> = {
   TaskCreated: 'created',
   TaskAssigned: 'assigned',

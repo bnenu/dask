@@ -11,6 +11,9 @@ It allows users to create tasks on the blockchain and provide funds to these
 tasks, assign tasks to other users and track completion of these tasks. It also
 has a claims system to manage disputes.
 
+[Test app](https://royal-sound-7180.on.fleek.co/)
+Deployed on fleek.co and rikeby.
+
 It includes the dex contract, scripts to run and deploy local or on testnets and a basic front-end app that connects to the contract.
 
 The stack used `Solidity`, `Typescript`, `Hardhat`, `EthersJS`, `NextJS` (create-next-app), `TailwindCSS`
